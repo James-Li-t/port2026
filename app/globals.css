@@ -37,6 +37,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   position: relative;
   overflow-x: hidden;
+  overflow-y: hidden; /* Prevent default scrolling */
 }
 
 /* Mathematical background pattern */
@@ -56,4 +57,22 @@ body::before {
   background-position: 0 0, 50px 50px, 0 0, 0 0;
   z-index: -1;
   pointer-events: none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 249, 230, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ffd580;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ffbb4d;
 }
