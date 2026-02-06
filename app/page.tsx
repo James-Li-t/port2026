@@ -19,7 +19,7 @@ export default function Home() {
 
         {/* Hero Section */}
         <section className="mb-24">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">Welcome, I'm <span className="text-[#ffbb4d]">James Li</span></h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">Hello, I am <span className="text-[#ffbb4d]">James Li</span></h1>
           <p className="text-xl text-[#666666] max-w-2xl mb-8">Currently a Mathematics undergraduate at Toronto Metropolitan University</p>
           <button className="bg-[#ffe6b3] hover:bg-[#ffd580] text-[#333333] font-medium py-2 px-6 rounded transition-colors">
             View My Work
@@ -58,17 +58,15 @@ export default function Home() {
 
         {/* Contact Section */}
         <section id="contact" className="mb-24">
-          <h2 className="text-3xl font-bold mb-8 text-[#333333]">Get In Touch</h2>
-          <div className="max-w-2xl">
-            <p className="text-[#666666] mb-6">Feel free to reach out to me via email or connect with me on social media.</p>
-            <div className="mb-6">
-              <p className="text-lg text-[#333333] font-medium">Email:</p>
-              <p className="text-[#666666]">Jamesli28000@gmail.com</p>
-            </div>
-            <div className="flex space-x-4">
-              <a href="#" className="bg-[#ffe6b3] hover:bg-[#ffd580] text-[#333333] py-2 px-4 rounded transition-colors">LinkedIn</a>
-              <a href="#" className="bg-[#ffe6b3] hover:bg-[#ffd580] text-[#333333] py-2 px-4 rounded transition-colors">GitHub</a>
-            </div>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="https://www.linkedin.com/in/james-li-3675a91b4/" className="bg-[#ffe6b3] hover:bg-[#ffd580] text-[#333333] py-3 px-6 rounded transition-colors flex items-center justify-center space-x-2 min-w-[150px]">
+              <img src="/linkedin-icon.svg" alt="LinkedIn" className="w-5 h-5" />
+              <span>LinkedIn</span>
+            </a>
+            <a href="https://github.com/James-Li-t" className="bg-[#ffe6b3] hover:bg-[#ffd580] text-[#333333] py-3 px-6 rounded transition-colors flex items-center justify-center space-x-2 min-w-[150px]">
+              <img src="/github-icon.svg" alt="GitHub" className="w-5 h-5" />
+              <span>GitHub</span>
+            </a>
           </div>
         </section>
 
