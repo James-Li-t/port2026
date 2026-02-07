@@ -11,8 +11,8 @@ const projects = [
   {
     id: 1,
     title: "Portfolio Website",
-    description: "Personal Website for hosting my works, includes contact information and CV. Vibecoded the framework and design with the qwen3 model running on OpenCode hosted on my local machine.",
-    technologies: ["NextJS", "TailwindCSS", "Ollama"],
+    description: "Personal Website for hosting my works, includes contact information and CV. Vibecoded with Claude, Codex and Opencode routed to open source LLM's hosted on my local machine.",
+    technologies: ["NextJS", "TailwindCSS", "Llama.cpp"],
     image: "/project1.png",
     link: "https://github.com/James-Li-t/port2026"
   },
