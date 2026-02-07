@@ -31,29 +31,6 @@ tsconfig.json   # TypeScript configuration
 package.json    # Project dependencies and scripts
 ```
 
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js 18+ (recommended)
-- npm, yarn, or pnpm package manager
-
-### Installation
-```bash
-npm install
-```
-
-### Development Server
-```bash
-npm run dev
-# Open http://localhost:3000 in your browser
-```
-
-### Build for Production
-```bash
-npm run build
-npm run start
-```
-
 ## 📚 Learning Resources
 
 - [Next.js Documentation](https://nextjs.org/docs) - Learn about Next.js features and API
