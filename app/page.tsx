@@ -1,11 +1,52 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import ProjectCard from "./components/ProjectCard";
+
+// Project data
+const projects = [
+  {
+    id: 1,
+    title: "Data Visualization Dashboard",
+    description: "Interactive dashboard for analyzing mathematical datasets with real-time visualization.",
+    technologies: ["React", "D3.js", "Python"],
+    image: "/project1.jpg"
+  },
+  {
+    id: 2,
+    title: "Statistical Analysis Tool",
+    description: "Web application for performing complex statistical analysis on research data.",
+    technologies: ["TypeScript", "R", "Shiny"],
+    image: "/project2.jpg"
+  },
+  {
+    id: 3,
+    title: "Machine Learning Model",
+    description: "Predictive model for financial market trends using historical data.",
+    technologies: ["Python", "TensorFlow", "Pandas"],
+    image: "/project3.jpg"
+  },
+  {
+    id: 4,
+    title: "Mathematical Optimization",
+    description: "Algorithm for optimizing resource allocation in logistics networks.",
+    technologies: ["Java", "MATLAB", "Linear Programming"],
+    image: "/project4.jpg"
+  },
+  {
+    id: 5,
+    title: "Cryptographic Research",
+    description: "Research project on elliptic curve cryptography implementations.",
+    technologies: ["C++", "OpenSSL", "Mathematica"],
+    image: "/project5.jpg"
+  }
+];
 
 export default function Home() {
   const [currentSection, setCurrentSection] = useState(0);
   const sections = ["hero", "about", "projects", "contact"];
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const handleScroll = (e: WheelEvent) => {
@@ -28,17 +69,53 @@ export default function Home() {
       }
     };
 
+    // Touch event handlers for mobile scrolling
+    let touchStartY = 0;
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (!touchStartY) return;
+
+      const touchEndY = e.changedTouches[0].clientY;
+      const diff = touchStartY - touchEndY;
+
+      if (Math.abs(diff) > 50) {
+        // Minimum threshold to detect swipe (50 pixels)
+        if (diff > 0) {
+          // Swiped up - go to next section
+          setCurrentSection(prev => Math.min(prev + 1, sections.length - 1));
+        } else {
+          // Swiped down - go to previous section
+          setCurrentSection(prev => Math.max(prev - 1, 0));
+        }
+      }
+
+      touchStartY = 0;
+    };
+
     window.addEventListener("wheel", handleScroll, { passive: false });
     window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd, { passive: true });
 
     return () => {
       window.removeEventListener("wheel", handleScroll);
       window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchend", handleTouchEnd);
     };
   }, []);
 
   return (
-    <div className="h-screen overflow-hidden bg-gradient-to-b from-[#fff9e6] to-[#fff5cc] text-[#333333]">
+    <div className="h-screen overflow-hidden bg-gradient-to-b from-[#ffffff] to-[#fff5cc] text-[#333333]">
+
+      {/* Favicon in top left corner */}
+      <div className="fixed top-4 left-4 z-50">
+        <img src="/favicon.ico" alt="Logo" className="h-12 w-12" />
+      </div>
+
       {/* Navigation Dots */}
       <div className="fixed right-8 top-1/2 transform -translate-y-1/2 z-50 flex flex-col space-y-4">
         {sections.map((_, index) => (
@@ -73,13 +150,15 @@ export default function Home() {
                 transition={{ duration: 0.7, delay: 0.2 }}
               >
                 <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                  Hello, I am <span className="text-[#ffbb4d]">James Li</span>
+                  Welcome to <span className="text-[#ffbb4d]">James Li</span>
                 </h1>
                 <p className="text-xl text-[#666666] max-w-2xl mb-8 mx-auto">
                   Current Mathematics undergraduate at Toronto Metropolitan University
                 </p>
-                <motion.button
-                  className="bg-[#ffe6b3] hover:bg-[#ffd580] text-[#333333] font-medium py-3 px-8 rounded-full transition-colors text-lg"
+                <motion.a
+                  href="/resume.pdf"
+                  download
+                  className="bg-[#ffe6b3] hover:bg-[#ffd580] text-[#333333] font-medium py-3 px-8 rounded-full transition-colors text-lg inline-block"
                   whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(255, 187, 77, 0.3)" }}
                   whileTap={{ scale: 0.95 }}
                   initial={{ opacity: 0, y: 20 }}
@@ -87,7 +166,7 @@ export default function Home() {
                   transition={{ delay: 0.5 }}
                 >
                   View Résumé
-                </motion.button>
+                </motion.a>
 
                 {/* Scroll indicator */}
                 <motion.div
@@ -138,9 +217,11 @@ export default function Home() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3 }}
                   >
-                    <div className="bg-[#ffe6b3] border-2 border-dashed border-[#ffd580] rounded-2xl w-full h-96 flex items-center justify-center">
-                      <span className="text-[#333333] font-medium">Profile Image</span>
-                    </div>
+                    <img
+                      src="https://placehold.co/400x400/png?text=James+Li&background=ffe6b3&color=333333"
+                      alt="James Li"
+                      className="w-full h-96 object-cover rounded-2xl"
+                    />
                   </motion.div>
 
                   <motion.div
@@ -160,7 +241,7 @@ export default function Home() {
                       sunt in culpa qui officia deserunt mollit anim id est laborum.
                     </p>
                     <div className="flex flex-wrap gap-4 mt-8">
-                      {["Mathematics", "Data Analysis", "Problem Solving", "Python", "R"].map((skill, index) => (
+                      {["English", "Mandarin Chinese", "Japanese"].map((skill, index) => (
                         <motion.span
                           key={skill}
                           className="bg-[#ffe6b3] text-[#333333] px-4 py-2 rounded-full"
@@ -197,35 +278,20 @@ export default function Home() {
                   Featured <span className="text-[#ffbb4d]">Projects</span>
                 </motion.h2>
 
-                <div className="grid md:grid-cols-3 gap-8">
-                  {[1, 2, 3].map((item, index) => (
-                    <motion.div
-                      key={item}
-                      className="border border-[#ffe6b3] rounded-2xl p-6 hover:shadow-xl transition-all bg-white bg-opacity-70 backdrop-blur-sm"
-                      initial={{ opacity: 0, y: 30 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 + index * 0.1 }}
-                      whileHover={{ y: -10, boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)" }}
-                    >
-                      <div className="bg-[#ffe6b3] border-2 border-dashed border-[#ffd580] rounded-xl w-full h-48 mb-6 flex items-center justify-center">
-                        <span className="text-[#333333] font-medium">Project {item} Preview</span>
-                      </div>
-                      <h3 className="text-2xl font-semibold mb-3">Project {item}</h3>
-                      <p className="text-[#666666] mb-4">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.
-                      </p>
-                      <div className="flex justify-between items-center">
-                        <a href="#" className="text-[#ffbb4d] hover:text-[#333333] transition-colors font-medium">
-                          View details →
-                        </a>
-                        <div className="flex space-x-2">
-                          {[1, 2, 3].map(i => (
-                            <span key={i} className="w-3 h-3 bg-[#ffe6b3] rounded-full"></span>
-                          ))}
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
+                {/* Horizontal scrollable projects container */}
+                <div className="overflow-x-auto pb-8">
+                  <div className="flex space-x-6 w-max">
+                    {projects.map((project, index) => (
+                      <motion.div
+                        key={project.id}
+                        initial={{ opacity: 0, x: 30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.3 + index * 0.1 }}
+                      >
+                        <ProjectCard project={project} />
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </motion.section>
@@ -256,7 +322,7 @@ export default function Home() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
                 >
-                  Feel free to reach out if you want to collaborate with me, or simply have a chat.
+                  Feel free to reach out and connect with me through the following platforms.
                 </motion.p>
 
                 <motion.div
@@ -292,7 +358,7 @@ export default function Home() {
                   transition={{ delay: 0.8 }}
                 >
                   <p className="text-[#666666]">
-                    © {new Date().getFullYear()} James Li. All rights reserved.
+                    © {new Date().getFullYear()} Disclaimer: This website was 100% vibecoded with Claude
                   </p>
                 </motion.div>
               </div>
@@ -303,4 +369,3 @@ export default function Home() {
     </div>
   );
 }
-
