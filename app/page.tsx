@@ -8,39 +8,12 @@ import ProjectCard from "./components/ProjectCard";
 const projects = [
   {
     id: 1,
-    title: "Data Visualization Dashboard",
-    description: "Interactive dashboard for analyzing mathematical datasets with real-time visualization.",
-    technologies: ["React", "D3.js", "Python"],
-    image: "/project1.jpg"
+    title: "Portfolio Website",
+    description: "Personal Website for hosting my works, includes contact information and CV. Vibecoded the framework and design with the qwen3 model running on OpenCode hosted on my local machine.",
+    technologies: ["NextJS", "TailwindCSS", "Ollama"],
+    image: "/project1.png",
+    link: "https://github.com/James-Li-t/port2026"
   },
-  {
-    id: 2,
-    title: "Statistical Analysis Tool",
-    description: "Web application for performing complex statistical analysis on research data.",
-    technologies: ["TypeScript", "R", "Shiny"],
-    image: "/project2.jpg"
-  },
-  {
-    id: 3,
-    title: "Machine Learning Model",
-    description: "Predictive model for financial market trends using historical data.",
-    technologies: ["Python", "TensorFlow", "Pandas"],
-    image: "/project3.jpg"
-  },
-  {
-    id: 4,
-    title: "Mathematical Optimization",
-    description: "Algorithm for optimizing resource allocation in logistics networks.",
-    technologies: ["Java", "MATLAB", "Linear Programming"],
-    image: "/project4.jpg"
-  },
-  {
-    id: 5,
-    title: "Cryptographic Research",
-    description: "Research project on elliptic curve cryptography implementations.",
-    technologies: ["C++", "OpenSSL", "Mathematica"],
-    image: "/project5.jpg"
-  }
 ];
 
 export default function Home() {
@@ -153,7 +126,7 @@ export default function Home() {
                 4th year Mathematics Student @ Toronto Metropolitan University
                 </p>
                 <motion.a
-                  href="/resume.pdf"
+                  href="/Resume.pdf"
                   download
                   className="bg-[#ffe6b3] hover:bg-[#ffd580] text-[#333333] font-medium py-3 px-8 rounded-full transition-colors text-lg inline-block"
                   whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(255, 187, 77, 0.3)" }}
@@ -205,9 +178,9 @@ export default function Home() {
                     transition={{ delay: 0.3 }}
                   >
                     <img
-                      src="https://placehold.co/400x400/png?text=James+Li&background=ffe6b3&color=333333"
+                      src="/profile.jpg"
                       alt="James Li"
-                      className="w-full h-96 object-cover rounded-2xl"
+                      className="object-cover rounded-2xl"
                     />
                   </motion.div>
 
@@ -218,14 +191,12 @@ export default function Home() {
                   >
                     <h3 className="text-2xl font-semibold mb-6 text-[#333333]">Who am I?</h3>
                     <p className="text-[#666666] mb-6 leading-relaxed">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                      incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                      nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    Currently, I am completing my fourth year in my mathematics program at TMU with an emphasis on pure mathematics (Real/Complex Analysis, Group/Ring Theory). 
+
+                    I also have a passion for Computer Science and Software development, below you will be able to view some personal projects I have developed.
                     </p>
                     <p className="text-[#666666] mb-6 leading-relaxed">
-                      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-                      eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                      sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    In my free time I enjoy going to the gym 💪 and learning to play the guitar 🎸😎.
                     </p>
                     <div className="flex flex-wrap gap-4 mt-8">
                       {["English", "Mandarin Chinese", "Japanese"].map((skill, index) => (
