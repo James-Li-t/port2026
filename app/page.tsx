@@ -46,7 +46,6 @@ const projects = [
 export default function Home() {
   const [currentSection, setCurrentSection] = useState(0);
   const sections = ["hero", "about", "projects", "contact"];
-  const mosaicCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const handleScroll = (e: WheelEvent) => {
@@ -108,109 +107,9 @@ export default function Home() {
     };
   }, []);
 
-  // Geometric tessellation background
-  useEffect(() => {
-    const canvas = mosaicCanvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      drawMosaic();
-    };
-
-    const colors = [
-      "rgba(255, 235, 163, 0.3)",
-      "rgba(255, 255, 255, 0.5)",
-      "rgba(255, 200, 100, 0.2)",
-      "rgba(255, 220, 150, 0.4)",
-      "rgba(255, 240, 180, 0.2)"
-    ];
-
-    const drawHexagon = (x: number, y: number, radius: number, color: string) => {
-      ctx.beginPath();
-      for (let i = 0; i < 6; i++) {
-        const angle = (Math.PI / 3) * i;
-        const hx = x + radius * Math.cos(angle);
-        const hy = y + radius * Math.sin(angle);
-        if (i === 0) {
-          ctx.moveTo(hx, hy);
-        } else {
-          ctx.lineTo(hx, hy);
-        }
-      }
-      ctx.closePath();
-      ctx.fillStyle = color;
-      ctx.fill();
-    };
-
-    const drawTriangle = (x: number, y: number, size: number, color: string) => {
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(x + size, y);
-      ctx.lineTo(x + size / 2, y - size * Math.sqrt(3) / 2);
-      ctx.closePath();
-      ctx.fillStyle = color;
-      ctx.fill();
-    };
-
-    const drawMosaic = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      const hexRadius = 80;
-      const hexWidth = hexRadius * Math.sqrt(3);
-      const hexHeight = hexRadius * 2;
-      const rowHeight = hexRadius;
-      const columnWidth = hexWidth;
-      
-      let currentRow = 0;
-      let currentCol = 0;
-      
-      for (let y = -hexHeight; y < canvas.height + hexHeight; y += rowHeight) {
-        for (let x = -hexWidth; x < canvas.width + hexWidth; x += columnWidth) {
-          const drawX = currentCol * columnWidth + (currentRow % 2 === 0 ? 0 : hexWidth / 2);
-          const drawY = currentRow * rowHeight + (currentRow % 2 === 0 ? 0 : rowHeight / 2);
-          
-          const randomColor = colors[Math.floor(Math.random() * colors.length)];
-          const shapeType = Math.random();
-          
-          if (shapeType < 0.4) {
-            drawHexagon(drawX, drawY, hexRadius * 0.7, randomColor);
-          } else if (shapeType < 0.7) {
-            drawTriangle(drawX, drawY, hexRadius * 0.8, randomColor);
-          } else {
-            ctx.beginPath();
-            ctx.arc(drawX, drawY, hexRadius * 0.4, 0, Math.PI * 2);
-            ctx.fillStyle = randomColor;
-            ctx.fill();
-          }
-          
-          currentCol++;
-        }
-        currentCol = 0;
-        currentRow++;
-      }
-    };
-
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
-    return () => {
-      window.removeEventListener("resize", resizeCanvas);
-    };
-  }, []);
 
   return (
-    <div className="h-screen overflow-hidden relative text-[#333333]">
-      {/* Geometric tessellation background */}
-      <canvas
-        ref={mosaicCanvasRef}
-        className="absolute inset-0 w-full h-full"
-        style={{ zIndex: 0 }}
-      />
+    <div className="h-screen bg-linear-to-b from-cyan-50 to-amber-100 overflow-hidden relative text-[#333333]">
 
       {/* Sections Container */}
       <div className="h-full relative" style={{ zIndex: 1 }}>
@@ -231,7 +130,7 @@ export default function Home() {
       </div>
 
       {/* Sections Container */}
-      <div className="h-full">
+        <div className="h-full">
         <AnimatePresence mode="wait">
           {currentSection === 0 && (
             <motion.section
@@ -274,17 +173,7 @@ export default function Home() {
                   transition={{ delay: 1 }}
                 >
                   <span className="text-[#666666] mb-2">Scroll Down</span>
-                  <motion.div
-                    className="w-8 h-12 border-2 border-[#ffbb4d] rounded-full flex justify-center"
-                    animate={{ y: [0, 8, 0] }}
-                    transition={{ repeat: Infinity, duration: 1.5 }}
-                  >
-                    <motion.div
-                      className="w-2 h-2 bg-[#ffbb4d] rounded-full mt-2"
-                      animate={{ opacity: [0, 1, 0] }}
-                      transition={{ repeat: Infinity, duration: 1.5 }}
-                    />
-                  </motion.div>
+                  <motion.div className="w-8 h-12 border-2 border-[#ffbb4d] rounded-full flex justify-center" animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 1.5 }} />
                 </motion.div>
               </motion.div>
             </motion.section>
@@ -456,7 +345,7 @@ export default function Home() {
                   transition={{ delay: 0.8 }}
                 >
                   <p className="text-[#666666]">
-                     Disclaimer: This website was 100% vibecoded.                  </p>
+                     Disclaimer: This website was 67% vibecoded.                  </p>
                 </motion.div>
               </div>
             </motion.section>
@@ -464,6 +353,6 @@ export default function Home() {
         </AnimatePresence>
       </div>
     </div>
-  </div>
+    </div>
   );
 }
