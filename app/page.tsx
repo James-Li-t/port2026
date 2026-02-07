@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import FaviconLoader from "./components/FaviconLoader";
 import ProjectCard from "./components/ProjectCard";
+import ParticleBackground from "./components/ParticleBackground";
 
 // Project data
 const projects = [
@@ -17,6 +19,15 @@ const projects = [
 ];
 
 export default function Home() {
+  const [isVisible, setIsVisible] = useState(true);
+
+    useEffect(() => {
+      const timeout = setTimeout(() => {
+        setIsVisible(false);
+      }, 4000);
+
+      return () => clearTimeout(timeout);
+    }, []);
   const [currentSection, setCurrentSection] = useState(0);
   const sections = ["hero", "about", "projects", "contact"];
 
@@ -84,6 +95,7 @@ export default function Home() {
   return (
     <div className="h-screen bg-linear-to-b from-cyan-50 to-amber-100 overflow-hidden relative text-[#333333]">
 
+      <ParticleBackground/>
       {/* Sections Container */}
       <div className="h-full relative" style={{ zIndex: 1 }}>
         {/* Navigation Dots */}
@@ -105,6 +117,17 @@ export default function Home() {
       {/* Sections Container */}
         <div className="h-full">
         <AnimatePresence mode="wait">
+          {isVisible && (
+            <motion.div
+              key="favicon-loader"
+              initial={{ opacity: 1}}
+              animate={{ opacity: 1, ease: "easeOut"}}
+              exit={{ opacity: 0}}
+              transition={{ duration:1}}
+            >
+              <FaviconLoader />
+            </motion.div>
+          )}
           {currentSection === 0 && (
             <motion.section
               key="hero"
@@ -112,7 +135,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.7 }}
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
