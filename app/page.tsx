@@ -334,7 +334,7 @@ function AboutSection() {
           >
             <h3 className="text-xl md:text-2xl font-light text-white">Who am I?</h3>
             <p className="text-gray-300 leading-relaxed text-sm md:text-lg">
-              Currently, I am completing my fourth year in my mathematics program at Toronto Metropolitan University with an emphasis on pure mathematics, including Real and Complex Analysis, as well as Group and Ring Theory.
+              Currently, I am completing my fourth year in my mathematics program at Toronto Metropolitan University, some notable courses I took are: MTH525(Real Analysis), MTH607(Graph Theory), MTH640(Complex Analysis), MTH617(Abstract Algebra), MTH814(Computational Complexity) and MTH642(Data Analytics)
             </p>
             <p className="text-gray-300 leading-relaxed text-sm md:text-lg">
               I have a strong passion for Computer Science and software development. Below you will find personal projects I have created that reflect this interest.
