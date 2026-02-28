@@ -1,7 +1,3 @@
-# Port2026 - James Li's Personal Portfolio
-
-A modern, minimalist personal portfolio website showcasing my background as a mathematics undergraduate at Toronto Metropolitan University with interests in software development.
-
 ## 🚀 Features
 
 - **Scroll-based navigation**: Smooth section transitions via scroll wheel, arrow keys, or touch gestures
@@ -37,13 +33,6 @@ app/
 public/                     # Static assets (images, icons, resume.pdf)
 skills/                     # Additional project resources
 ```
-
-## 📄 Sections
-
-1. **Hero** - Name display with "View Résumé" CTA button
-2. **About** - Statistics, profile photo, and personal description
-3. **Projects** - Grid of featured projects with tech tags
-4. **Contact** - Social links (LinkedIn, GitHub) and email
 
 ## 🏃 Getting Started
 
@@ -86,9 +75,3 @@ Builds the production bundle and ensures no TypeScript or compilation errors
 - **Typography**: Geist Sans and Geist Mono from Google Fonts
 - **Animations**: Spring easing `[0.34, 1.56, 0.76, 1]` for smooth transitions
 
-## 📄 License
-
-This project is open source and available under the MIT License.
-
----
-*Disclaimer: This website was 67% vibecoded.*
