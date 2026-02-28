@@ -1,42 +1,94 @@
-## 🚀 Technologies Used
+# Port2026 - James Li's Personal Portfolio
 
-### 🛠️ Framework & Runtime
-- **Next.js 16.1.6** - The React framework for production with App Router support
-- **React 19.2.3** - The JavaScript library for building user interfaces
-- **TypeScript 5** - Typed JavaScript for better code quality and developer experience
+A modern, minimalist personal portfolio website showcasing my background as a mathematics undergraduate at Toronto Metropolitan University with interests in software development.
 
-### 🎨 Styling & UI
-- **Tailwind CSS 4** - A utility-first CSS framework for rapid UI development
-- **Framer Motion 12.33.0** - A production-ready animation library for React
+## 🚀 Features
 
-### 📬 Additional Dependencies
-- **Nodemailer 8.0.0** - Email delivery for Node.js applications
+- **Scroll-based navigation**: Smooth section transitions via scroll wheel, arrow keys, or touch gestures
+- **Dynamic particle background**: 120 particles with pulsing effects, connecting lines, mouse repulsion, and constrained movement within fixed radii
+- **Dark theme**: Consistent `#333333` background with amber accents (`#ffbb4d`, `#ffe6b3`, `#ffd580`)
+- **Responsive design**: Optimized for desktop and mobile devices
+- **Animated loading screen**: Sleek favicon loader with 3-second fade-out transition
+- **PDF viewer modal**: Dark theme modal for viewing and downloading resume
 
-### ⚙️ Development Tools
-- **ESLint 9** - The pluggable linting utility for JavaScript and TypeScript
-- **PostCSS 4** - A tool for transforming CSS with JavaScript
+## 🛠️ Technologies
+
+- **Next.js 16.1.6** - React framework with App Router
+- **React 19.2.3** - UI library
+- **TypeScript 5** - Type-safe JavaScript
+- **Tailwind CSS 4** - Utility-first styling
+- **Framer Motion 12.33.0** - Animation library with spring easing `[0.34, 1.56, 0.76, 1]`
+- **ESLint 9** - Code linting
 
 ## 🏗️ Project Structure
 
-This project follows the modern Next.js 13+ App Router structure:
-
 ```
 app/
-  layout.tsx    # Root layout component
-  page.tsx      # Main homepage component
-  not-found.tsx # 404 page component
-public/         # Static assets (SVG files, etc.)
-next.config.ts  # Next.js configuration
-tsconfig.json   # TypeScript configuration
-package.json    # Project dependencies and scripts
+├── components/
+│   ├── FaviconLoader.tsx   # Animated loading screen with favicon
+│   ├── ParticleBackground.tsx # Dynamic particle canvas animation
+│   ├── PdfViewer.tsx       # Dark theme PDF viewer modal
+│   └── ProjectCard.tsx     # Dark theme project card component
+├── favicon.ico
+├── globals.css             # Global styles and custom scrollbar
+├── layout.tsx              # Root layout with Google fonts
+├── not-found.tsx           # Custom 404 page
+└── page.tsx                # Main homepage with sections
+public/                     # Static assets (images, icons, resume.pdf)
+skills/                     # Additional project resources
 ```
 
-## 📚 Learning Resources
+## 📄 Sections
 
-- [Next.js Documentation](https://nextjs.org/docs) - Learn about Next.js features and API
-- [Learn Next.js](https://nextjs.org/learn) - Interactive Next.js tutorial
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs) - Utility-first CSS framework
+1. **Hero** - Name display with "View Résumé" CTA button
+2. **About** - Statistics, profile photo, and personal description
+3. **Projects** - Grid of featured projects with tech tags
+4. **Contact** - Social links (LinkedIn, GitHub) and email
 
+## 🏃 Getting Started
+
+### Development
+
+```bash
+npm run dev
+```
+
+Starts the development server at `http://localhost:3000`
+
+### Production Build
+
+```bash
+npm run build
+npm start
+```
+
+Creates a production build and starts the production server
+
+### Linting
+
+```bash
+npm run lint
+```
+
+Runs ESLint to check for code issues
+
+### Verification
+
+```bash
+npm run build
+```
+
+Builds the production bundle and ensures no TypeScript or compilation errors
+
+## 🎨 Design
+
+- **Color palette**: `#333333` (background), `#ffbb4d` (primary), `#ffe6b3` (secondary), `#ffd580` (accent)
+- **Typography**: Geist Sans and Geist Mono from Google Fonts
+- **Animations**: Spring easing `[0.34, 1.56, 0.76, 1]` for smooth transitions
+
+## 📄 License
+
+This project is open source and available under the MIT License.
 
 ---
-*This README.md was created with assistance from opencode, an AI-powered development tool.*
+*Disclaimer: This website was 67% vibecoded.*
