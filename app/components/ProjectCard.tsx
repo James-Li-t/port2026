@@ -14,33 +14,42 @@ interface Project {
 export default function ProjectCard({ project }: { project: Project }) {
   return (
     <motion.div
-      className="flex-shrink-0 w-80 border border-[#ffe6b3] rounded-2xl p-6 hover:shadow-xl transition-all bg-white backdrop-blur-sm mr-6"
-      whileHover={{ y: -10, boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)" }}
+      className="flex-shrink-0 w-full bg-[#333333] border border-[#ffbb4d]/30 rounded-2xl p-6 hover:border-[#ffbb4d] transition-all duration-300 shadow-md hover:shadow-xl"
+      whileHover={{ y: -8, scale: 1.02 }}
+      transition={{ duration: 0.3, ease: [0.34, 1.56, 0.76, 1] }}
     >
-      <div className="relative w-full h-48 mb-6 rounded-xl overflow-hidden">
-        <img
-          src={project.image}
-          alt={project.title}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 rounded-xl" />
+      <div className="relative w-full h-48 mb-6 overflow-hidden rounded-xl bg-gradient-to-br from-[#ffbb4d]/20 to-[#ffe6b3]/10">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-[#ffbb4d] text-4xl font-light">
+            {project.title.charAt(0)}
+          </span>
+        </div>
       </div>
-      <h3 className="text-2xl font-semibold mb-3">{project.title}</h3>
-      <p className="text-[#666666] mb-4">
+      <h3 className="text-xl font-light mb-3 text-white">{project.title}</h3>
+      <p className="text-gray-300 mb-4 text-sm leading-relaxed">
         {project.description}
       </p>
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className="flex flex-wrap gap-2 mb-6">
         {project.technologies.map((tech, index) => (
-          <span key={index} className="bg-[#ffe6b3] text-[#333333] px-2 py-1 rounded-full text-xs">
+          <motion.span
+            key={index}
+            className="bg-[#ffbb4d]/20 text-white px-3 py-1 rounded-full text-xs hover:bg-[#ffbb4d] hover:text-[#333333] transition-colors duration-300 border border-[#ffbb4d]/30"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.2, ease: [0.34, 1.56, 0.76, 1] }}
+          >
             {tech}
-          </span>
+          </motion.span>
         ))}
       </div>
-      <div className="flex justify-between items-center">
-        <a href={project.link} className="text-[#ffbb4d] hover:text-[#333333] transition-colors font-medium">
-          View details →
-        </a>
-      </div>
+      <motion.a
+        href={project.link}
+        className="text-[#ffbb4d] hover:text-[#ffe6b3] transition-colors font-light inline-flex items-center group"
+        whileHover={{ x: 4 }}
+        transition={{ duration: 0.2, ease: [0.34, 1.56, 0.76, 1] }}
+      >
+        View details
+        <motion.span className="ml-2" animate={{ x: [0, 4, 0] }} transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}>→</motion.span>
+      </motion.a>
     </motion.div>
   );
 }
