@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import FaviconLoader from "./components/FaviconLoader";
@@ -11,23 +11,72 @@ import PdfViewer from "./components/PdfViewer";
 const SECTIONS = ["hero", "about", "projects", "contact"];
 const LOADER_DURATION = 2500;
 const SWIPE_THRESHOLD = 50;
+const spring = { duration: 0.8, ease: [0.34, 1.56, 0.76, 1] as const };
+
+const projectsData = [
+  {
+    id: 1,
+    title: "Portfolio Website",
+    description: "Personal Website for hosting my works, includes contact information and CV. Built with Next.js, TailwindCSS, and Llama.cpp.",
+    technologies: ["NextJS", "TailwindCSS", "Llama.cpp"],
+    image: "/project1.png",
+    link: "https://github.com/James-Li-t/port2026",
+  },
+  {
+    id: 2,
+    title: "Mathematics Visualization Tool",
+    description: "Interactive web application for visualizing complex mathematical concepts including calculus, linear algebra, and abstract algebra structures.",
+    technologies: ["React", "D3.js", "TypeScript"],
+    image: "/project2.png",
+    link: "#",
+  },
+  {
+    id: 3,
+    title: "Data Analysis Dashboard",
+    description: "Comprehensive data visualization dashboard for statistical analysis with real-time updates and interactive charts.",
+    technologies: ["Python", "Pandas", "Plotly"],
+    image: "/project3.png",
+    link: "#",
+  },
+];
+
+const socialLinksData = [
+  {
+    href: "https://www.linkedin.com/in/james-li-3675a91b4/",
+    icon: "/linkedin-icon.svg",
+    alt: "LinkedIn",
+    label: "LinkedIn",
+  },
+  {
+    href: "https://github.com/James-Li-t",
+    icon: "/github-icon.svg",
+    alt: "GitHub",
+    label: "GitHub",
+  },
+];
+
+const statsData = [
+  { value: "4+", label: "Years in Mathematics" },
+  { value: "n=n+1", label: "Lines of Code Written" },
+];
 
 function navigateSection(current: number, direction: -1 | 1): number {
   return Math.max(0, Math.min(current + direction, SECTIONS.length - 1));
 }
-
-const spring = { duration: 0.8, ease: [0.34, 1.56, 0.76, 1] as const };
-const variants = {
-  initial: { opacity: 0, y: 30, scale: 0.98 },
-  animate: { opacity: 1, y: 0, scale: 1 },
-  exit: { opacity: 0, y: -20 },
-};
 
 export default function Home() {
   const [isVisible, setIsVisible] = useState(true);
   const [shouldUnmountLoader, setShouldUnmountLoader] = useState(false);
   const [currentSection, setCurrentSection] = useState(0);
   const [isPdfOpen, setIsPdfOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -38,6 +87,8 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (isMobile) return;
+
     const handleScroll = (e: WheelEvent) => {
       e.preventDefault();
       setCurrentSection(prev => navigateSection(prev, e.deltaY > 0 ? 1 : -1));
@@ -53,56 +104,23 @@ export default function Home() {
       }
     };
 
-    let touchStartY = 0;
-    const handleTouchStart = (e: TouchEvent) => {
-      touchStartY = e.touches[0].clientY;
-    };
-
-    const handleTouchEnd = (e: TouchEvent) => {
-      const touchEndY = e.changedTouches[0].clientY;
-      const diff = touchStartY - touchEndY;
-      if (Math.abs(diff) > SWIPE_THRESHOLD) {
-        setCurrentSection(prev => navigateSection(prev, diff > 0 ? 1 : -1));
-      }
-      touchStartY = 0;
-    };
-
     window.addEventListener("wheel", handleScroll, { passive: false });
     window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("touchstart", handleTouchStart, { passive: true });
-    window.addEventListener("touchend", handleTouchEnd, { passive: true });
 
     return () => {
       window.removeEventListener("wheel", handleScroll);
       window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("touchstart", handleTouchStart);
-      window.removeEventListener("touchend", handleTouchEnd);
     };
-  }, []);
-
-  const renderSection = () => {
-    switch (currentSection) {
-      case 0:
-        return renderHero(setIsPdfOpen);
-      case 1:
-        return renderAbout();
-      case 2:
-        return renderProjects();
-      case 3:
-        return renderContact();
-      default:
-        return null;
-    }
-  };
+  }, [isMobile]);
 
   return (
-    <div className="h-screen bg-[#333333] overflow-hidden relative text-white">
+    <div className="bg-[#333333] relative text-white">
       <ParticleBackground />
-      <div className="h-full relative z-1">
+      <div className={`relative z-1 ${isMobile ? "min-h-screen overflow-y-auto" : "h-screen overflow-hidden"}`}>
         <NavigationDots currentSection={currentSection} setCurrentSection={setCurrentSection} />
         <AnimatePresence mode="wait">
           {!shouldUnmountLoader && <FaviconLoader key="loader" />}
-          {renderSection()}
+          <SectionRenderer currentSection={currentSection} setIsPdfOpen={setIsPdfOpen} />
         </AnimatePresence>
       </div>
       <PdfViewer
@@ -139,14 +157,35 @@ function NavigationDots({
   );
 }
 
-function renderHero(setIsPdfOpen: (open: boolean) => void) {
+function SectionRenderer({
+  currentSection,
+  setIsPdfOpen,
+}: {
+  currentSection: number;
+  setIsPdfOpen: (open: boolean) => void;
+}) {
+  switch (currentSection) {
+    case 0:
+      return <HeroSection setIsPdfOpen={setIsPdfOpen} />;
+    case 1:
+      return <AboutSection />;
+    case 2:
+      return <ProjectsSection />;
+    case 3:
+      return <ContactSection />;
+    default:
+      return null;
+  }
+}
+
+function HeroSection({ setIsPdfOpen }: { setIsPdfOpen: (open: boolean) => void }) {
   return (
     <motion.section
       key="hero"
-      className="h-full flex flex-col items-center justify-center px-4 text-center relative overflow-hidden"
-      initial={variants.initial}
-      animate={variants.animate}
-      exit={variants.exit}
+      className="min-h-screen flex flex-col items-center justify-center px-4 text-center relative"
+      initial={{ opacity: 0, y: 30, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -20 }}
       transition={spring}
     >
       <motion.div
@@ -215,16 +254,11 @@ function renderHero(setIsPdfOpen: (open: boolean) => void) {
   );
 }
 
-function renderAbout() {
-  const stats = [
-    { value: "4+", label: "Years in Mathematics" },
-    { value: "n=n+1", label: "Lines of Code Written" },
-  ];
-
+function AboutSection() {
   return (
     <motion.section
       key="about"
-      className="h-full flex flex-col justify-center px-4 py-8 md:py-12 relative overflow-hidden"
+      className="min-h-screen flex flex-col justify-center px-4 py-8 md:py-12 relative"
       initial={{ opacity: 0, x: 30, scale: 0.97 }}
       animate={{ opacity: 1, x: 0, scale: 1 }}
       exit={{ opacity: 0, x: -30, scale: 0.97 }}
@@ -253,7 +287,7 @@ function renderAbout() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ ...spring, delay: 0.3 }}
         >
-          {stats.map((stat, index) => (
+          {statsData.map((stat, index) => (
             <motion.div
               key={stat.label}
               className="text-center p-4 md:p-6 bg-[#333333]/80 border border-[#ffbb4d]/30 rounded-2xl hover:border-[#ffbb4d] transition-colors backdrop-blur-sm"
@@ -329,38 +363,11 @@ function renderAbout() {
   );
 }
 
-function renderProjects() {
-  const projects = [
-    {
-      id: 1,
-      title: "Portfolio Website",
-      description: "Personal Website for hosting my works, includes contact information and CV. Built with Next.js, TailwindCSS, and Llama.cpp.",
-      technologies: ["NextJS", "TailwindCSS", "Llama.cpp"],
-      image: "/project1.png",
-      link: "https://github.com/James-Li-t/port2026",
-    },
-    {
-      id: 2,
-      title: "Mathematics Visualization Tool",
-      description: "Interactive web application for visualizing complex mathematical concepts including calculus, linear algebra, and abstract algebra structures.",
-      technologies: ["React", "D3.js", "TypeScript"],
-      image: "/project2.png",
-      link: "#",
-    },
-    {
-      id: 3,
-      title: "Data Analysis Dashboard",
-      description: "Comprehensive data visualization dashboard for statistical analysis with real-time updates and interactive charts.",
-      technologies: ["Python", "Pandas", "Plotly"],
-      image: "/project3.png",
-      link: "#",
-    },
-  ];
-
+function ProjectsSection() {
   return (
     <motion.section
       key="projects"
-      className="h-full flex flex-col justify-center px-4 py-8 md:py-12 relative overflow-hidden"
+      className="min-h-screen flex flex-col justify-center px-4 py-8 md:py-12 relative"
       initial={{ opacity: 0, y: 30, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -30, scale: 0.97 }}
@@ -386,10 +393,8 @@ function renderProjects() {
         </motion.p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {projects.map((project, index) => (
-            <div
-              key={project.id}
-            >
+          {projectsData.map((project) => (
+            <div key={project.id}>
               <ProjectCard project={project} />
             </div>
           ))}
@@ -399,26 +404,11 @@ function renderProjects() {
   );
 }
 
-function renderContact() {
-  const socialLinks = [
-    {
-      href: "https://www.linkedin.com/in/james-li-3675a91b4/",
-      icon: "/linkedin-icon.svg",
-      alt: "LinkedIn",
-      label: "LinkedIn",
-    },
-    {
-      href: "https://github.com/James-Li-t",
-      icon: "/github-icon.svg",
-      alt: "GitHub",
-      label: "GitHub",
-    },
-  ];
-
+function ContactSection() {
   return (
     <motion.section
       key="contact"
-      className="h-full flex flex-col justify-center px-4 py-8 md:py-12 relative overflow-hidden"
+      className="min-h-screen flex flex-col justify-center px-4 py-8 md:py-12 relative"
       initial={{ opacity: 0, scale: 0.97, y: 30 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.97, y: -30 }}
@@ -449,7 +439,7 @@ function renderContact() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ ...spring, delay: 0.5 }}
         >
-          {socialLinks.map((link, index) => (
+          {socialLinksData.map((link, index) => (
             <motion.div
               key={link.label}
               initial={{ opacity: 0, scale: 0.9 }}

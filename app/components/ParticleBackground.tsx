@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 interface Particle {
   x: number;
@@ -10,39 +10,22 @@ interface Particle {
   size: number;
   color: string;
   opacity: number;
-  pulsePhase: number;
-  pulseSpeed: number;
-  baseVx: number;
-  baseVy: number;
-  spawnX: number;
-  spawnY: number;
-  radius: number;
 }
 
-interface ConnectingParticle {
-  index1: number;
-  index2: number;
-  distance: number;
-}
-
-const PARTICLE_COUNT = 120;
-const PARTICLE_SPEED = 0.3;
-const PARTICLE_SIZE_RANGE = 3;
-const PARTICLE_OPACITY_RANGE = 0.4;
+const PARTICLE_COUNT = 60;
+const PARTICLE_SPEED = 0.2;
+const PARTICLE_SIZE_RANGE = 2;
+const PARTICLE_OPACITY_RANGE = 0.3;
 const PARTICLE_COLORS = ["#ffbb4d", "#ffe6b3", "#ffd580"];
-const REPULSION_RANGE = 150;
-const REPULSION_FORCE = 0.2;
-const FRICTION = 0.99;
-const CONNECTION_DISTANCE = 140;
-const CONNECTION_OPACITY = 0.12;
+const CONNECTION_DISTANCE = 120;
+const CONNECTION_OPACITY = 0.08;
 
 export default function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [time, setTime] = useState(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
+    const ctx = canvas?.getContext("2d", { alpha: false });
     if (!canvas || !ctx) return;
 
     const resizeCanvas = () => {
@@ -51,47 +34,42 @@ export default function ParticleBackground() {
     };
     resizeCanvas();
 
-    const particles: Particle[] = [];
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      particles.push(createParticle(canvas));
-    }
-
-    let mouseX = canvas.width / 2;
-    let mouseY = canvas.height / 2;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    };
+    const particles: Particle[] = Array.from({ length: PARTICLE_COUNT }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * PARTICLE_SPEED,
+      vy: (Math.random() - 0.5) * PARTICLE_SPEED,
+      size: Math.random() * PARTICLE_SIZE_RANGE + 1,
+      color: PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)],
+      opacity: Math.random() * PARTICLE_OPACITY_RANGE + 0.2,
+    }));
 
     window.addEventListener("resize", resizeCanvas);
-    window.addEventListener("mousemove", handleMouseMove);
 
     let animationId: number;
-    let startTime = Date.now();
+    let lastTime = performance.now();
 
-    const animate = () => {
-      const currentTime = Date.now();
-      setTime(currentTime - startTime);
-      startTime = currentTime;
+    const animate = (currentTime: number) => {
+      const deltaTime = (currentTime - lastTime) / 16;
+      lastTime = currentTime;
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#333333";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       particles.forEach((particle) => {
-        updateParticle(particle, canvas, mouseX, mouseY);
-        drawParticle(ctx, particle, currentTime);
+        updateParticle(particle, canvas, deltaTime);
+        drawParticle(ctx, particle);
       });
 
-      drawConnections(ctx, particles, currentTime);
+      drawConnections(ctx, particles);
 
       animationId = requestAnimationFrame(animate);
     };
 
-    animate();
+    animationId = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener("resize", resizeCanvas);
-      window.removeEventListener("mousemove", handleMouseMove);
       cancelAnimationFrame(animationId);
     };
   }, []);
@@ -104,65 +82,13 @@ export default function ParticleBackground() {
   );
 }
 
-function createParticle(canvas: HTMLCanvasElement): Particle {
-  const angle = Math.random() * Math.PI * 2;
-  const speed = 0.05 + Math.random() * 0.05;
-  const radius = 150 + Math.random() * 100;
-  return {
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    vx: (Math.random() - 0.5) * PARTICLE_SPEED,
-    vy: (Math.random() - 0.5) * PARTICLE_SPEED,
-    size: Math.random() * PARTICLE_SIZE_RANGE + 1,
-    color: PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)],
-    opacity: Math.random() * PARTICLE_OPACITY_RANGE + 0.2,
-    pulsePhase: Math.random() * Math.PI * 2,
-    pulseSpeed: 0.02 + Math.random() * 0.03,
-    baseVx: Math.cos(angle) * speed,
-    baseVy: Math.sin(angle) * speed,
-    spawnX: Math.random() * canvas.width,
-    spawnY: Math.random() * canvas.height,
-    radius: radius,
-  };
-}
-
 function updateParticle(
   particle: Particle,
   canvas: HTMLCanvasElement,
-  mouseX: number,
-  mouseY: number
+  deltaTime: number
 ) {
-  const dx = mouseX - particle.x;
-  const dy = mouseY - particle.y;
-  const distance = Math.sqrt(dx * dx + dy * dy);
-
-  if (distance < REPULSION_RANGE) {
-    const force = (REPULSION_RANGE - distance) / REPULSION_RANGE;
-    particle.vx -= (dx / distance) * force * REPULSION_FORCE;
-    particle.vy -= (dy / distance) * force * REPULSION_FORCE;
-  }
-
-  particle.vx += particle.baseVx * 0.01;
-  particle.vy += particle.baseVy * 0.01;
-
-  const distFromSpawn = Math.sqrt(
-    Math.pow(particle.x - particle.spawnX, 2) + 
-    Math.pow(particle.y - particle.spawnY, 2)
-  );
-
-  if (distFromSpawn > particle.radius) {
-    const dxToSpawn = particle.spawnX - particle.x;
-    const dyToSpawn = particle.spawnY - particle.y;
-    const dist = Math.sqrt(dxToSpawn * dxToSpawn + dyToSpawn * dyToSpawn);
-    const restoringForce = 0.02;
-    particle.vx += (dxToSpawn / dist) * restoringForce;
-    particle.vy += (dyToSpawn / dist) * restoringForce;
-  }
-
-  particle.x += particle.vx;
-  particle.y += particle.vy;
-  particle.vx *= FRICTION;
-  particle.vy *= FRICTION;
+  particle.x += particle.vx * deltaTime;
+  particle.y += particle.vy * deltaTime;
 
   if (particle.x < 0 || particle.x > canvas.width) {
     particle.x = particle.x < 0 ? 0 : canvas.width;
@@ -176,30 +102,19 @@ function updateParticle(
 
 function drawParticle(
   ctx: CanvasRenderingContext2D,
-  particle: Particle,
-  currentTime: number
+  particle: Particle
 ) {
-  const pulse = Math.sin(particle.pulsePhase + currentTime * 0.002) * 0.5 + 0.5;
-  const size = particle.size + pulse * 0.5;
-  
   ctx.beginPath();
-  ctx.arc(particle.x, particle.y, size, 0, Math.PI * 2);
+  ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
   ctx.fillStyle = particle.color;
-  ctx.globalAlpha = particle.opacity * (0.7 + pulse * 0.3);
-  ctx.fill();
-  
-  ctx.beginPath();
-  ctx.arc(particle.x, particle.y, size * 0.6, 0, Math.PI * 2);
-  ctx.fillStyle = particle.color;
-  ctx.globalAlpha = particle.opacity * 0.4;
+  ctx.globalAlpha = particle.opacity;
   ctx.fill();
   ctx.globalAlpha = 1;
 }
 
 function drawConnections(
   ctx: CanvasRenderingContext2D,
-  particles: Particle[],
-  currentTime: number
+  particles: Particle[]
 ) {
   for (let i = 0; i < particles.length; i++) {
     for (let j = i + 1; j < particles.length; j++) {
@@ -209,13 +124,12 @@ function drawConnections(
 
       if (distance < CONNECTION_DISTANCE) {
         const opacity = CONNECTION_OPACITY * (1 - distance / CONNECTION_DISTANCE);
-        const pulse = Math.sin(currentTime * 0.002 + i * 0.5) * 0.3 + 0.7;
-        
+
         ctx.beginPath();
         ctx.moveTo(particles[i].x, particles[i].y);
         ctx.lineTo(particles[j].x, particles[j].y);
         ctx.strokeStyle = PARTICLE_COLORS[i % PARTICLE_COLORS.length];
-        ctx.globalAlpha = opacity * pulse;
+        ctx.globalAlpha = opacity;
         ctx.lineWidth = 0.5;
         ctx.stroke();
         ctx.globalAlpha = 1;

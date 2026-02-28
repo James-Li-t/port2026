@@ -15,21 +15,21 @@ interface Particle {
   yRange: number;
 }
 
-const PARTICLE_COUNT = 20;
+const PARTICLE_COUNT = 10;
 const LOADER_DURATION = 3000;
 
 export default function FaviconLoader() {
   const [particles] = useState<Particle[]>(() =>
-    [...Array(PARTICLE_COUNT)].map((_, i) => ({
+    Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
       id: i,
       left: Math.random() * 100,
       top: Math.random() * 100,
-      width: Math.random() * 4 + 2,
-      height: Math.random() * 4 + 2,
-      opacity: Math.random() * 0.5 + 0.2,
+      width: Math.random() * 3 + 2,
+      height: Math.random() * 3 + 2,
+      opacity: Math.random() * 0.4 + 0.2,
       duration: 2 + Math.random() * 2,
-      xRange: (Math.random() - 0.5) * 100,
-      yRange: (Math.random() - 0.5) * 100,
+      xRange: (Math.random() - 0.5) * 80,
+      yRange: (Math.random() - 0.5) * 80,
     }))
   );
   const [shouldExit, setShouldExit] = useState(false);
@@ -107,7 +107,7 @@ export default function FaviconLoader() {
           ))}
 
           <motion.div
-            className="relative w-20 h-20 bg-gradient-to-br from-[#ffbb4d] to-[#ffe6b3] rounded-2xl flex items-center justify-center shadow-2xl"
+            className="relative w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#ffbb4d] to-[#ffe6b3] rounded-2xl flex items-center justify-center shadow-2xl"
             initial={{ rotate: -180, scale: 0 }}
             animate={{ rotate: 0, scale: 1 }}
             transition={{ duration: 1, ease: [0.34, 1.56, 0.76, 1] }}
@@ -115,7 +115,7 @@ export default function FaviconLoader() {
             <img
               src="/favicon.ico"
               alt="James Li"
-              className="w-12 h-12 object-contain"
+              className="w-10 h-10 md:w-12 md:h-12 object-contain"
               style={{ filter: "drop-shadow(0 0 8px rgba(255, 187, 77, 0.5))" }}
             />
             <motion.div
@@ -133,7 +133,7 @@ export default function FaviconLoader() {
           transition={{ delay: 0.3, duration: 0.6 }}
         >
           <motion.h1
-            className="text-2xl md:text-3xl lg:text-4xl font-light text-white tracking-widest"
+            className="text-xl md:text-2xl lg:text-3xl font-light text-white tracking-widest"
             initial={{ opacity: 0, letterSpacing: "-0.05em" }}
             animate={{ opacity: 1, letterSpacing: "0.1em" }}
             transition={{ delay: 0.5, duration: 0.8 }}
@@ -143,7 +143,7 @@ export default function FaviconLoader() {
         </motion.div>
 
         <motion.div
-          className="mt-8 w-32 md:w-48 h-1 bg-[#ffe6b3]/30 rounded-full overflow-hidden"
+          className="mt-8 w-24 md:w-32 h-1 bg-[#ffe6b3]/30 rounded-full overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
@@ -160,7 +160,7 @@ export default function FaviconLoader() {
       {[...Array(4)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute w-12 md:w-16 h-12 md:h-16 border-[#ffbb4d]"
+          className="absolute w-8 md:w-12 h-8 md:h-12 border-[#ffbb4d]"
           style={{
             top: i < 2 ? "20px" : "auto",
             bottom: i >= 2 ? "20px" : "auto",
