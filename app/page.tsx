@@ -21,23 +21,7 @@ const projectsData = [
     technologies: ["NextJS", "TailwindCSS", "Llama.cpp"],
     image: "/project1.png",
     link: "https://github.com/James-Li-t/port2026",
-  },
-  {
-    id: 2,
-    title: "Mathematics Visualization Tool",
-    description: "Interactive web application for visualizing complex mathematical concepts including calculus, linear algebra, and abstract algebra structures.",
-    technologies: ["React", "D3.js", "TypeScript"],
-    image: "/project2.png",
-    link: "#",
-  },
-  {
-    id: 3,
-    title: "Data Analysis Dashboard",
-    description: "Comprehensive data visualization dashboard for statistical analysis with real-time updates and interactive charts.",
-    technologies: ["Python", "Pandas", "Plotly"],
-    image: "/project3.png",
-    link: "#",
-  },
+  }
 ];
 
 const socialLinksData = [
@@ -58,6 +42,7 @@ const socialLinksData = [
 const statsData = [
   { value: "4+", label: "Years in Mathematics" },
   { value: "n=n+1", label: "Lines of Code Written" },
+  { value: "23", label: "Years on Earth" },
 ];
 
 function navigateSection(current: number, direction: -1 | 1): number {
