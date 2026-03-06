@@ -1,19 +1,24 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import FaviconLoader from "./components/FaviconLoader";
 import ProjectCard from "./components/ProjectCard";
 import ParticleBackground from "./components/ParticleBackground";
-import PdfViewer from "./components/PdfViewer";
+import type { Project, SocialLink, Stat } from "./types";
+
+const PdfViewer = dynamic(() => import("./components/PdfViewer"), {
+  loading: () => null,
+  ssr: false,
+});
 
 const SECTIONS = ["hero", "about", "projects", "contact"];
 const LOADER_DURATION = 2500;
-const SWIPE_THRESHOLD = 50;
 const spring = { duration: 0.8, ease: [0.34, 1.56, 0.76, 1] as const };
 
-const projectsData = [
+const projectsData: Project[] = [
   {
     id: 1,
     title: "Portfolio Website",
@@ -24,7 +29,7 @@ const projectsData = [
   }
 ];
 
-const socialLinksData = [
+const socialLinksData: SocialLink[] = [
   {
     href: "https://www.linkedin.com/in/james-li-3675a91b4/",
     icon: "/linkedin-icon.svg",
@@ -39,7 +44,7 @@ const socialLinksData = [
   },
 ];
 
-const statsData = [
+const statsData: Stat[] = [
   { value: "4+", label: "Years in Mathematics" },
   { value: "n=n+1", label: "Lines of Code Written" },
   { value: "23", label: "Years on Earth" },
@@ -50,7 +55,6 @@ function navigateSection(current: number, direction: -1 | 1): number {
 }
 
 export default function Home() {
-  const [isVisible, setIsVisible] = useState(true);
   const [shouldUnmountLoader, setShouldUnmountLoader] = useState(false);
   const [currentSection, setCurrentSection] = useState(0);
   const [isPdfOpen, setIsPdfOpen] = useState(false);
@@ -65,7 +69,6 @@ export default function Home() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsVisible(false);
       setShouldUnmountLoader(true);
     }, LOADER_DURATION);
     return () => clearTimeout(timer);
@@ -101,13 +104,13 @@ export default function Home() {
   return (
     <div className="bg-[#333333] relative text-white">
       <ParticleBackground />
-      <div className={`relative z-1 ${isMobile ? "min-h-screen overflow-y-auto" : "h-screen overflow-hidden"}`}>
+      <main className={`relative z-[var(--z-base)] ${isMobile ? "min-h-screen overflow-y-auto" : "h-screen overflow-hidden"}`}>
         <NavigationDots currentSection={currentSection} setCurrentSection={setCurrentSection} />
         <AnimatePresence mode="wait">
           {!shouldUnmountLoader && <FaviconLoader key="loader" />}
           <SectionRenderer currentSection={currentSection} setIsPdfOpen={setIsPdfOpen} />
         </AnimatePresence>
-      </div>
+      </main>
       <PdfViewer
         pdfUrl="/Resume.pdf"
         isOpen={isPdfOpen}
@@ -125,15 +128,15 @@ function NavigationDots({
   setCurrentSection: (index: number) => void;
 }) {
   return (
-    <div className="fixed right-4 md:right-8 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3 md:gap-4">
+    <div className="fixed right-4 md:right-8 top-1/2 -translate-y-1/2 z-[var(--z-dropdown)] flex flex-col gap-3 md:gap-4">
       {SECTIONS.map((_, index) => (
         <button
           key={index}
           onClick={() => setCurrentSection(index)}
           className={`w-2.5 h-2.5 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
             currentSection === index
-              ? "bg-[#ffbb4d] scale-125"
-              : "bg-[#ffbb4d]/50 hover:bg-[#ffe6b3]"
+              ? "bg-primary scale-125"
+              : "bg-primary/50 hover:bg-secondary"
           }`}
           aria-label={`Go to section ${index + 1}`}
         />
@@ -174,12 +177,12 @@ function HeroSection({ setIsPdfOpen }: { setIsPdfOpen: (open: boolean) => void }
       transition={spring}
     >
       <motion.div
-        className="absolute top-20 left-10 w-32 h-32 bg-[#ffbb4d] rounded-full blur-3xl opacity-20 md:block hidden"
+        className="absolute top-20 left-10 w-32 h-32 bg-primary rounded-full blur-3xl opacity-20 md:block hidden"
         animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute bottom-20 right-10 w-40 h-40 bg-[#ffe6b3] rounded-full blur-3xl opacity-15 md:block hidden"
+        className="absolute bottom-20 right-10 w-40 h-40 bg-secondary rounded-full blur-3xl opacity-15 md:block hidden"
         animate={{ scale: [1, 1.3, 1], rotate: [0, -90, 0] }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
       />
@@ -197,7 +200,7 @@ function HeroSection({ setIsPdfOpen }: { setIsPdfOpen: (open: boolean) => void }
           transition={{ ...spring, delay: 0.3 }}
         >
           <span className="text-white">James</span>{" "}
-          <span className="text-[#ffbb4d]">Li</span>
+          <span className="text-primary">Li</span>
         </motion.h1>
 
         <motion.p
@@ -211,7 +214,7 @@ function HeroSection({ setIsPdfOpen }: { setIsPdfOpen: (open: boolean) => void }
 
         <motion.button
           onClick={() => setIsPdfOpen(true)}
-          className="inline-block bg-[#ffbb4d] text-[#333333] px-8 py-3 md:px-10 md:py-4 hover:bg-[#ffe6b3] transition-colors duration-300 font-medium tracking-wide rounded-full shadow-lg hover:shadow-xl"
+          className="inline-block bg-primary text-background px-8 py-3 md:px-10 md:py-4 hover:bg-secondary transition-colors duration-300 font-medium tracking-wide rounded-full shadow-lg hover:shadow-xl"
           whileHover={{ scale: 1.05, y: -3 }}
           whileTap={{ scale: 0.95 }}
           initial={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -229,7 +232,7 @@ function HeroSection({ setIsPdfOpen }: { setIsPdfOpen: (open: boolean) => void }
         >
           <span className="text-gray-400 text-xs md:text-sm mb-3 md:mb-4">Scroll to explore</span>
           <motion.div
-            className="w-[1px] h-16 md:h-20 bg-gradient-to-b from-[#ffbb4d] to-transparent"
+            className="w-[1px] h-16 md:h-20 bg-gradient-to-b from-primary to-transparent"
             animate={{ opacity: [0.5, 1, 0.5] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
           />
@@ -250,7 +253,7 @@ function AboutSection() {
       transition={spring}
     >
       <motion.div
-        className="absolute top-10 right-20 w-48 h-48 bg-[#ffbb4d] rounded-full blur-3xl opacity-15 md:block hidden"
+        className="absolute top-10 right-20 w-48 h-48 bg-primary rounded-full blur-3xl opacity-15 md:block hidden"
         animate={{ scale: [1, 1.1, 1], rotate: [0, 45, 0] }}
         transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
       />
@@ -263,7 +266,7 @@ function AboutSection() {
           transition={{ ...spring, delay: 0.2 }}
         >
           About{" "}
-          <span className="text-[#ffbb4d]">Me</span>
+          <span className="text-primary">Me</span>
         </motion.h2>
 
         <motion.div
@@ -275,13 +278,13 @@ function AboutSection() {
           {statsData.map((stat, index) => (
             <motion.div
               key={stat.label}
-              className="text-center p-4 md:p-6 bg-[#333333]/80 border border-[#ffbb4d]/30 rounded-2xl hover:border-[#ffbb4d] transition-colors backdrop-blur-sm"
+              className="text-center p-4 md:p-6 bg-background/80 border border-primary/30 rounded-2xl hover:border-primary transition-colors backdrop-blur-sm"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ ...spring, delay: 0.4 + index * 0.1 }}
               whileHover={{ scale: 1.05, y: -5 }}
             >
-              <div className="text-3xl md:text-4xl lg:text-5xl font-light text-[#ffbb4d] mb-1 md:mb-2">
+              <div className="text-3xl md:text-4xl lg:text-5xl font-light text-primary mb-1 md:mb-2">
                 {stat.value}
               </div>
               <div className="text-gray-300 text-xs md:text-sm font-light">{stat.label}</div>
@@ -301,14 +304,14 @@ function AboutSection() {
             animate={{ opacity: 1, x: 0, scale: 1 }}
             transition={{ ...spring, delay: 0.6 }}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-[#ffbb4d] to-[#ffe6b3] rounded-2xl transform rotate-3 opacity-15 md:block hidden" />
+            <div className="absolute inset-0 bg-gradient-to-br from-primary to-secondary rounded-2xl transform rotate-3 opacity-15 md:block hidden" />
             <Image
               src="/profile.jpg"
               alt="James Li"
               width={400}
               height={500}
+              sizes="(max-width: 768px) 280px, 400px"
               className="relative object-cover rounded-2xl shadow-lg w-full max-w-[300px] mx-auto"
-              priority
             />
           </motion.div>
           <motion.div
@@ -331,7 +334,7 @@ function AboutSection() {
               {["English", "Mandarin Chinese", "Japanese"].map((lang, index) => (
                 <motion.span
                   key={lang}
-                  className="border border-[#ffbb4d] text-white px-4 py-1.5 md:px-5 md:py-2 text-xs md:text-sm hover:bg-[#ffbb4d] hover:text-[#333333] transition-colors duration-300"
+                  className="border border-primary text-white px-4 py-1.5 md:px-5 md:py-2 text-xs md:text-sm hover:bg-primary hover:text-background transition-colors duration-300"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ ...spring, delay: 0.8 + index * 0.1 }}
@@ -366,7 +369,7 @@ function ProjectsSection() {
           transition={{ ...spring, delay: 0.2 }}
         >
           Featured{" "}
-          <span className="text-[#ffbb4d]">Projects</span>
+          <span className="text-primary">Projects</span>
         </motion.h2>
         <motion.p
           className="text-gray-300 mb-8 md:mb-12 text-center max-w-2xl mx-auto text-sm md:text-base"
@@ -407,7 +410,7 @@ function ContactSection() {
           transition={{ ...spring, delay: 0.2 }}
         >
           Get In{" "}
-          <span className="text-[#ffbb4d]">Touch</span>
+          <span className="text-primary">Touch</span>
         </motion.h2>
         <motion.p
           className="text-base md:text-lg text-gray-300 mb-8 md:mb-12 max-w-2xl mx-auto font-light"
@@ -438,7 +441,7 @@ function ContactSection() {
         </motion.div>
 
         <motion.div
-          className="bg-[#333333]/80 border border-[#ffbb4d]/30 rounded-2xl p-6 md:p-8 mb-6 md:mb-8 text-center backdrop-blur-sm"
+          className="bg-background/80 border border-primary/30 rounded-2xl p-6 md:p-8 mb-6 md:mb-8 text-center backdrop-blur-sm"
           initial={{ opacity: 0, y: 20, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ ...spring, delay: 0.8 }}
@@ -448,14 +451,14 @@ function ContactSection() {
           </p>
           <a
             href="mailto:Jamesli28000@gmail.com"
-            className="text-[#ffbb4d] font-medium hover:text-white transition-colors text-sm md:text-base"
+            className="text-primary font-medium hover:text-white transition-colors text-sm md:text-base"
           >
             Jamesli28000@gmail.com
           </a>
         </motion.div>
 
         <motion.div
-          className="border-t border-[#ffbb4d]/30 pt-6 md:pt-8"
+          className="border-t border-primary/30 pt-6 md:pt-8"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...spring, delay: 0.9 }}
@@ -481,7 +484,7 @@ function SocialLink({
   return (
     <motion.a
       href={href}
-      className="bg-[#333333]/80 text-white border border-[#ffbb4d]/30 py-3 md:py-4 px-6 md:px-8 hover:bg-[#ffbb4d] hover:text-[#333333] transition-colors duration-300 flex items-center justify-center gap-2 md:gap-3 min-w-[180px] md:min-w-[200px] font-light rounded-xl shadow-md hover:shadow-lg backdrop-blur-sm"
+      className="bg-background/80 text-white border border-primary/30 py-3 md:py-4 px-6 md:px-8 hover:bg-primary hover:text-background transition-colors duration-300 flex items-center justify-center gap-2 md:gap-3 min-w-[180px] md:min-w-[200px] font-light rounded-xl shadow-md hover:shadow-lg backdrop-blur-sm"
       whileHover={{ y: -3, scale: 1.02 }}
       whileTap={{ scale: 0.97 }}
       transition={{ duration: 0.3, ease: [0.34, 1.56, 0.76, 1] }}

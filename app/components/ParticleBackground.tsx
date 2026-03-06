@@ -16,7 +16,7 @@ const PARTICLE_COUNT = 60;
 const PARTICLE_SPEED = 0.2;
 const PARTICLE_SIZE_RANGE = 2;
 const PARTICLE_OPACITY_RANGE = 0.3;
-const PARTICLE_COLORS = ["#ffbb4d", "#ffe6b3", "#ffd580"];
+const PARTICLE_COLORS = ["var(--color-primary)", "var(--color-secondary)", "var(--color-accent)"];
 const CONNECTION_DISTANCE = 120;
 const CONNECTION_OPACITY = 0.08;
 

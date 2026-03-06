@@ -1,22 +1,14 @@
 "use client";
 
-import { motion } from "framer-motion";
+import React from "react";
+import type { Project } from "../types";
 
-interface Project {
-  id: number;
-  title: string;
-  description: string;
-  technologies: string[];
-  image: string;
-  link: string;
-}
-
-export default function ProjectCard({ project }: { project: Project }) {
+const ProjectCard = React.memo(function ProjectCard({ project }: { project: Project }) {
   return (
-    <div className="w-full bg-[#333333] border border-[#ffbb4d]/30 rounded-2xl p-5 md:p-6 hover:border-[#ffbb4d] transition-all duration-300 shadow-md hover:shadow-xl">
-      <div className="relative w-full h-40 md:h-48 mb-4 md:mb-6 overflow-hidden rounded-xl bg-gradient-to-br from-[#ffbb4d]/20 to-[#ffe6b3]/10">
+    <div className="w-full bg-background border border-primary/30 rounded-2xl p-5 md:p-6 hover:border-primary transition-all duration-300 shadow-md hover:shadow-xl">
+      <div className="relative w-full h-40 md:h-48 mb-4 md:mb-6 overflow-hidden rounded-xl bg-gradient-to-br from-primary/20 to-secondary/10">
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-[#ffbb4d] text-3xl md:text-4xl font-light">
+          <span className="text-primary text-3xl md:text-4xl font-light">
             {project.title.charAt(0)}
           </span>
         </div>
@@ -31,7 +23,7 @@ export default function ProjectCard({ project }: { project: Project }) {
         {project.technologies.map((tech, index) => (
           <span
             key={index}
-            className="bg-[#ffbb4d]/20 text-white px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs hover:bg-[#ffbb4d] hover:text-[#333333] transition-colors duration-300 border border-[#ffbb4d]/30"
+            className="bg-primary/20 text-white px-2.5 py-1 md:px-3 md:py-1 rounded-full text-xs hover:bg-primary hover:text-background transition-colors duration-300 border border-primary/30"
           >
             {tech}
           </span>
@@ -39,11 +31,13 @@ export default function ProjectCard({ project }: { project: Project }) {
       </div>
       <a
         href={project.link}
-        className="text-[#ffbb4d] hover:text-[#ffe6b3] transition-colors font-light inline-flex items-center"
+        className="text-primary hover:text-secondary transition-colors font-light inline-flex items-center"
       >
         View details
         <span className="ml-1.5 md:ml-2">→</span>
       </a>
     </div>
   );
-}
+});
+
+export default ProjectCard;

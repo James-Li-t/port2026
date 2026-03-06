@@ -2,18 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-
-interface Particle {
-  id: number;
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-  opacity: number;
-  duration: number;
-  xRange: number;
-  yRange: number;
-}
+import Image from "next/image";
+import type { Particle } from "../types";
 
 const PARTICLE_COUNT = 10;
 const LOADER_DURATION = 3000;
@@ -41,7 +31,7 @@ export default function FaviconLoader() {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] bg-[#333333] flex items-center justify-center"
+      className="fixed inset-0 z-[var(--z-modal)] bg-background flex items-center justify-center"
       initial={{ opacity: 1 }}
       animate={{ opacity: shouldExit ? 0 : 1 }}
       exit={{ opacity: 0 }}
@@ -51,7 +41,7 @@ export default function FaviconLoader() {
         {particles.map((particle) => (
           <motion.div
             key={particle.id}
-            className="absolute rounded-full bg-[#ffbb4d]"
+            className="absolute rounded-full bg-primary"
             suppressHydrationWarning
             style={{
               left: `${particle.left}%`,
@@ -107,19 +97,21 @@ export default function FaviconLoader() {
           ))}
 
           <motion.div
-            className="relative w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#ffbb4d] to-[#ffe6b3] rounded-2xl flex items-center justify-center shadow-2xl"
+            className="relative w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center shadow-2xl"
             initial={{ rotate: -180, scale: 0 }}
             animate={{ rotate: 0, scale: 1 }}
             transition={{ duration: 1, ease: [0.34, 1.56, 0.76, 1] }}
           >
-            <img
+            <Image
               src="/favicon.ico"
               alt="James Li"
-              className="w-10 h-10 md:w-12 md:h-12 object-contain"
+              width={48}
+              height={48}
+              className="object-contain"
               style={{ filter: "drop-shadow(0 0 8px rgba(255, 187, 77, 0.5))" }}
             />
             <motion.div
-              className="absolute inset-0 rounded-2xl bg-[#ffbb4d]"
+              className="absolute inset-0 rounded-2xl bg-primary"
               animate={{ opacity: [0.2, 0.5, 0.2] }}
               transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             />
@@ -149,7 +141,7 @@ export default function FaviconLoader() {
           transition={{ delay: 1 }}
         >
           <motion.div
-            className="h-full bg-gradient-to-r from-[#ffbb4d] to-[#ffe6b3] rounded-full"
+            className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
             initial={{ width: "0%" }}
             animate={{ width: "100%" }}
             transition={{ duration: 2.5, ease: "easeInOut" }}
@@ -160,7 +152,7 @@ export default function FaviconLoader() {
       {[...Array(4)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute w-8 md:w-12 h-8 md:h-12 border-[#ffbb4d]"
+          className="absolute w-8 md:w-12 h-8 md:h-12 border-primary"
           style={{
             top: i < 2 ? "20px" : "auto",
             bottom: i >= 2 ? "20px" : "auto",
@@ -177,10 +169,10 @@ export default function FaviconLoader() {
           <div
             className="w-full h-full"
             style={{
-              borderTop: i % 2 === 0 ? "2px solid #ffbb4d" : "none",
-              borderRight: i >= 1 ? "2px solid #ffbb4d" : "none",
-              borderBottom: i % 2 === 1 ? "2px solid #ffbb4d" : "none",
-              borderLeft: i < 1 ? "2px solid #ffbb4d" : "none",
+              borderTop: i % 2 === 0 ? "2px solid var(--color-primary)" : "none",
+              borderRight: i >= 1 ? "2px solid var(--color-primary)" : "none",
+              borderBottom: i % 2 === 1 ? "2px solid var(--color-primary)" : "none",
+              borderLeft: i < 1 ? "2px solid var(--color-primary)" : "none",
             }}
           />
         </motion.div>

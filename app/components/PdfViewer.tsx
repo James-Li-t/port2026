@@ -2,14 +2,9 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import type { PdfViewerProps as PdfViewerPropsType } from "../types";
 
-interface PdfViewerProps {
-  pdfUrl: string;
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export default function PdfViewer({ pdfUrl, isOpen, onClose }: PdfViewerProps) {
+export default function PdfViewer({ pdfUrl, isOpen, onClose }: PdfViewerPropsType) {
   const [isLoading, setIsLoading] = useState(true);
 
   const handleDownload = () => {
@@ -34,17 +29,17 @@ export default function PdfViewer({ pdfUrl, isOpen, onClose }: PdfViewerProps) {
           />
 
           <motion.div
-            className="fixed inset-2 md:inset-8 bg-[#333333] rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden border border-[#ffbb4d]/30"
+            className="fixed inset-2 md:inset-8 bg-background rounded-2xl shadow-2xl z-[var(--z-modal)] flex flex-col overflow-hidden border border-primary/30"
             initial={{ scale: 0.9, opacity: 0, y: 50 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 50 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
           >
-            <div className="flex items-center justify-between px-4 py-3 md:px-6 md:py-4 bg-[#ffbb4d]/10 border-b border-[#ffbb4d]/30">
+            <div className="flex items-center justify-between px-4 py-3 md:px-6 md:py-4 bg-primary/10 border-b border-primary/30">
               <h3 className="text-base md:text-lg font-medium text-white">Resume</h3>
               <button
                 onClick={onClose}
-                className="text-white hover:text-[#ffbb4d] transition-colors p-1 rounded-lg hover:bg-[#ffbb4d]/20"
+                className="text-white hover:text-primary transition-colors p-1 rounded-lg hover:bg-primary/20"
                 aria-label="Close viewer"
               >
                 <svg
@@ -64,11 +59,11 @@ export default function PdfViewer({ pdfUrl, isOpen, onClose }: PdfViewerProps) {
               </button>
             </div>
 
-            <div className="flex-1 bg-[#333333] overflow-hidden relative">
+            <div className="flex-1 bg-background overflow-hidden relative">
               {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-[#333333]/90 z-10">
+                <div className="absolute inset-0 flex items-center justify-center bg-background/90 z-10">
                   <div className="flex flex-col items-center">
-                    <div className="w-10 h-10 md:w-12 md:h-12 border-4 border-[#ffbb4d] border-t-transparent rounded-full animate-spin" />
+                    <div className="w-10 h-10 md:w-12 md:h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
                     <p className="mt-3 md:mt-4 text-gray-300 text-xs md:text-sm">Loading PDF...</p>
                   </div>
                 </div>
@@ -81,13 +76,13 @@ export default function PdfViewer({ pdfUrl, isOpen, onClose }: PdfViewerProps) {
               />
             </div>
 
-            <div className="flex items-center justify-between px-4 py-3 md:px-6 md:py-4 bg-[#ffbb4d]/10 border-t border-[#ffbb4d]/30">
+            <div className="flex items-center justify-between px-4 py-3 md:px-6 md:py-4 bg-primary/10 border-t border-primary/30">
               <p className="text-gray-300 text-xs md:text-sm hidden sm:block">
                 James Li - Mathematics Undergraduate
               </p>
               <motion.button
                 onClick={handleDownload}
-                className="flex items-center gap-1.5 md:gap-2 bg-[#ffbb4d] text-[#333333] px-4 py-2 md:px-6 md:py-2.5 rounded-lg hover:bg-[#ffe6b3] transition-colors duration-300 font-medium shadow-md hover:shadow-lg text-xs md:text-sm"
+                className="flex items-center gap-1.5 md:gap-2 bg-primary text-background px-4 py-2 md:px-6 md:py-2.5 rounded-lg hover:bg-secondary transition-colors duration-300 font-medium shadow-md hover:shadow-lg text-xs md:text-sm"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
